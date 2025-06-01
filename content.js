@@ -1,9 +1,10 @@
-let noteButtonn = null;
+let noteButton = null;
 
-function createNoteButton(x, y) {
-	if (noteButtonn) noteButtonn.remove();
+function createNoteButton(x, y, selection) {
+	if (noteButton) noteButton.remove();
 
-	noteButtonn = document.createElement("button");
+	noteButton = document.createElement("button");
+	noteButton.id = "noteButton"
 	noteButton.textContent = "Add Note";
 	noteButton.style.position = "absolute";
 	noteButton.style.top = `${y}px`;
@@ -17,35 +18,36 @@ function createNoteButton(x, y) {
 
 	document.body.appendChild(noteButton);
 
-	noteButton.onClick = () => {
-		const selectedText = window.getSelection().toString().trim();
-		if (selectedText) {
+	noteButton.addEventListener("click", () => {
+		if (selection) {
 			const note = prompt("Enter your note");
 			if (note) {
 				const url = window.location.href;
 
 				chrome.storage.local.get([url], (result) => {
 					const notes = result[url] || [];
-					notes.push({text: selectedText, note});
+					notes.push({text: selection, note});
 					chrome.storage.local.set({ [url]: notes });
 					alert("Note saved");
+
+					noteButton.remove();
+					noteButton = null;
 				});
 			}
 		}
-
-		noteButton.remove();
-		noteButton = null;
-	}
+	})
 }
 
 
 document.addEventListener("mouseup", (e) => {
-	const selection = window.getSelection().toString().trim();
-	if (selection.length > 0) {
-		const {x, y} = e;
-		createNoteButton(x + 10, y + 10);
-	} else if (noteButton) {
-		noteButton.remove();
-		noteButton = null;
-	}
+	setTimeout(() => {
+		const selection = window.getSelection().toString().trim();
+		if (selection.length > 0) {
+			const {x, y} = e;
+			createNoteButton(x + 10, y, selection);
+		} else if (noteButton) {
+			noteButton.remove();
+			noteButton = null;
+		}
+	}, 10);
 });
