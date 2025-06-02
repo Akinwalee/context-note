@@ -17,20 +17,33 @@ function getXPath(node) {
 function createNoteButton(x, y, selection) {
 	if (noteButton) noteButton.remove();
 
+	const range = selection.getRangeAt(0);
+	const rect = range.getBoundingClientRect();
+	const offsetX = 0;
+    const offsetY = -42;
+
 	noteButton = document.createElement("button");
-	noteButton.id = "noteButton"
+	noteButton.id = "noteButton";
 	noteButton.textContent = "Add Note";
 	noteButton.style.position = "absolute";
-	noteButton.style.top = `${y}px`;
-	noteButton.style.left = `${x}px`;
+	noteButton.style.left = `${window.scrollX + rect.left + offsetX}px`;
+    noteButton.style.top = `${window.scrollY + rect.top + offsetY}px`;
 	noteButton.style.zIndex = 9999;
 	noteButton.style.padding = `5px 10px`;
 	noteButton.style.background = "#ffd700";
 	noteButton.style.border = "1px solid #333";
 	noteButton.style.borderRadius = "5px";
 	noteButton.style.cursor = "pointer";
+	noteButton.style.boxShadow = "0, 2px 6px rgba(0,0,0,0.15";
+	noteButton.style.fontSize = "12px";
+	noteButton.style.transition = "opacity 0,3s ease";
+	noteButton.style.opacity = "0";
 
 	document.body.appendChild(noteButton);
+
+	requestAnimationFrame(() => {
+		noteButton.style.opacity = "1";
+	})
 
 	noteButton.addEventListener("click", () => {
 		const selectedText = selection.toString().trim();
@@ -38,10 +51,10 @@ function createNoteButton(x, y, selection) {
 			const note = prompt("Enter your note");
 			if (note) {
 				const url = window.location.href;
-				const range = selection.getRangeAt(0);
 				const xpath = getXPath(range.startContainer);
 				const startOffset = range.startOffset;
 				const endOffset = range.endOffset;
+
 
 				const noteData = {
 					text: selectedText,
@@ -57,12 +70,15 @@ function createNoteButton(x, y, selection) {
 					chrome.storage.local.set({ [url]: notes });
 					alert("Note saved");
 
-					noteButton.remove();
-					noteButton = null;
+					noteButton.style.opacity = "0";
+					setTimeout(() => {
+						noteButton.remove();
+						noteButton = null;
+					}, 300);
 				});
 			}
 		}
-	})
+	});
 }
 
 document.addEventListener("mouseup", (e) => {
