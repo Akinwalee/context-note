@@ -45,6 +45,30 @@ function createNoteButton(x, y, selection) {
 		noteButton.style.opacity = "1";
 	})
 
+	const colorPalette = document.createElement("div");
+    colorPalette.className = "contextnote-color-palette";
+    colorPalette.innerHTML = `
+        <span class="color-option" data-color="#FFEB3B"></span>
+        <span class="color-option" data-color="#4CAF50"></span>
+        <span class="color-option" data-color="#2196F3"></span>
+        <span class="color-option" data-color="#F44336"></span>
+        <span class="color-option" data-color="#9C27B0"></span>
+    `;
+    noteButton.appendChild(colorPalette);
+    
+    // Color selection
+    let selectedColor = "#FFEB3B";
+    colorPalette.querySelectorAll('.color-option').forEach(option => {
+        option.style.backgroundColor = option.dataset.color;
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedColor = option.dataset.color;
+            colorPalette.querySelectorAll('.color-option').forEach(op => 
+                op.classList.remove('selected'));
+            option.classList.add('selected');
+        });
+    });
+	
 	noteButton.addEventListener("click", () => {
 		const selectedText = selection.toString().trim();
 		if (selectedText) {
@@ -61,7 +85,8 @@ function createNoteButton(x, y, selection) {
 					note,
 					xpath,
 					startOffset,
-					endOffset
+					endOffset,
+					color: selectedColor
 				};
 
 				chrome.storage.local.get([url], (result) => {
@@ -122,7 +147,7 @@ noteViewer.style.transition = "opacity 0.2s ease";
 document.body.appendChild(noteViewer);
 
 
-function highlightText({ xpath, startOffset, endOffset, note}) {
+function highlightText({ xpath, startOffset, endOffset, note, color = "#FFEB3B" }) {
 	const result = document.evaluate(
 		xpath,
 		document,
@@ -140,6 +165,7 @@ function highlightText({ xpath, startOffset, endOffset, note}) {
 
 	const span = document.createElement("span");
 	span.className = "contextnote-highlight";
+	span.style.backgroundColor = color;
 	span.addEventListener("mouseenter", (e) => {
 		noteViewer.textContent = note;
 		const rect = span.getBoundingClientRect();
@@ -157,7 +183,6 @@ function highlightText({ xpath, startOffset, endOffset, note}) {
 const style = document.createElement("style");
 style.textContent =  `
   .contextnote-highlight {
-    background-color: yellow;
     cursor: pointer;
     border-radius: 2px;
     padding: 0 2px;
