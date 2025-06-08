@@ -1,0 +1,290 @@
+:root {
+    --primary-color: #4a6cf7;
+    --accent-color: #ffd700;
+    --text-color: #333;
+    --bg-color: #fff;
+    --card-bg: #f9f9f9;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 8px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+    margin: 0;
+    width: 360px;
+    max-height: 600px;
+    overflow-y: auto;
+    color: var(--text-color);
+    background: var(--bg-color);
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.header-actions button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--radius);
+}
+
+.header-actions button:hover {
+    background: var(--card-bg);
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-color);
+    position: sticky;
+    top: 52px;
+    z-index: 9;
+}
+
+.tab-btn {
+    padding: 10px 16px;
+    flex: 1;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    padding: 16px;
+}
+
+.hidden {
+    display: none;
+}
+
+.search-bar {
+    display: flex;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 14px;
+}
+
+#filter-button {
+    padding: 8px 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#filter-button:hover {
+    background: #eee;
+}
+
+.note {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border-left: 3px solid var(--accent-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.note:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.note-content {
+    padding: 16px;
+}
+
+.highlighted-text {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.note-text {
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.note-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #777;
+}
+
+.note-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.tag {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.note-actions {
+    display: flex;
+    border-top: 1px solid var(--border-color);
+}
+
+.note-action-btn {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.note-action-btn:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.delete-btn {
+    color: #e53935;
+}
+
+/* Stats Container Styling */
+.stats-container {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+}
+
+/* Stats Summary Section */
+.stats-summary {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Individual Stat Box */
+.stat-box {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #6e8eff 100%);
+    border-radius: var(--radius);
+    color: white;
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+    transition: transform 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+}
+
+/* Stat Number */
+.stat-number {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+/* Stat Label */
+.stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Tags Summary Section */
+.tags-summary {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.tags-summary h4 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    color: #555;
+    font-weight: 600;
+}
+
+/* Tag List Container */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Individual Tag Pill */
+.tag-pill {
+    background: white;
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(74, 108, 247, 0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+.tag-pill:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(74, 108, 247, 0.2);
+}

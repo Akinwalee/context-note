@@ -206,4 +206,49 @@ window.addEventListener("load", () => {
 	});
 });
 
+function createNoteEditor(selection, callback) {
+    const modal = document.createElement('div');
+    modal.className = 'contextnote-modal';
+    modal.innerHTML = `
+        <div class="contextnote-modal-content">
+            <h3>Add Note</h3>
+            <div class="editor-toolbar">
+                <button data-command="bold"><b>B</b></button>
+                <button data-command="italic"><i>I</i></button>
+                <button data-command="underline"><u>U</u></button>
+                <button data-command="insertOrderedList">1.</button>
+                <button data-command="insertUnorderedList">•</button>
+            </div>
+            <div id="rich-editor" contenteditable="true"></div>
+            <div class="tags-input">
+                <label>Tags (comma-separated)</label>
+                <input type="text" id="tags-field" placeholder="research, important, review...">
+            </div>
+            <div class="modal-actions">
+                <button id="save-note">Save</button>
+                <button id="cancel-note">Cancel</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    document.querySelectorAll('.editor-toolbar button').forEach(button => {
+        button.addEventListener('click', () => {
+            document.execCommand(button.dataset.command, false, null);
+        });
+    });
+    
+    document.getElementById('save-note').addEventListener('click', () => {
+        const noteContent = document.getElementById('rich-editor').innerHTML;
+        const tags = document.getElementById('tags-field').value;
+        modal.remove();
+        callback(noteContent, tags);
+    });
+    
+    document.getElementById('cancel-note').addEventListener('click', () => {
+        modal.remove();
+        callback(null);
+    });
+}
+
 
