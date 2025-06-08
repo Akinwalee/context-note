@@ -74,6 +74,9 @@ function createNoteButton(x, y, selection) {
 		if (selectedText) {
 			const note = prompt("Enter your note");
 			if (note) {
+				const tagsInput = prompt("Add tags (comma-separated, optional)");
+				const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+				
 				const url = window.location.href;
 				const xpath = getXPath(range.startContainer);
 				const startOffset = range.startOffset;
@@ -86,7 +89,9 @@ function createNoteButton(x, y, selection) {
 					xpath,
 					startOffset,
 					endOffset,
-					color: selectedColor
+					color: selectedColor,
+					tags: tags,
+					createdAt: new Date().toISOString()
 				};
 
 				chrome.storage.local.get([url], (result) => {
