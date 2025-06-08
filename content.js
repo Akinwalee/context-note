@@ -34,7 +34,7 @@ function createNoteButton(x, y, selection) {
 	noteButton.style.border = "1px solid #333";
 	noteButton.style.borderRadius = "5px";
 	noteButton.style.cursor = "pointer";
-	noteButton.style.boxShadow = "0, 2px 6px rgba(0,0,0,0.15";
+	noteButton.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15";
 	noteButton.style.fontSize = "12px";
 	noteButton.style.transition = "opacity 0,3s ease";
 	noteButton.style.opacity = "0";
@@ -68,17 +68,31 @@ function createNoteButton(x, y, selection) {
 					const notes = result[url] || [];
 					notes.push(noteData);
 					chrome.storage.local.set({ [url]: notes });
-					alert("Note saved");
+					alert("Note saved");						
 
-					noteButton.style.opacity = "0";
-					setTimeout(() => {
-						noteButton.remove();
-						noteButton = null;
-					}, 300);
+
+					chrome.storage.local.get((url), (result) => {
+						const updatedNotes = result[url] || [];
+						updatedNotes.forEach((nodeData) => {
+							highlightText(nodeData);
+						});
+					});
 				});
 			}
 		}
 	});
+
+	if(noteButton) {
+		const thisButton = noteButton;
+		setTimeout(() => {
+			if (thisButton && thisButton.parentNode) {
+						noteButton.remove();
+						if (noteButton === thisButton) {
+					noteButton = null;
+				}
+			}
+		}, 10000);
+	}
 }
 
 document.addEventListener("mouseup", (e) => {
@@ -93,6 +107,19 @@ document.addEventListener("mouseup", (e) => {
 		}
 	}, 10);
 });
+
+const noteViewer = document.createElement("div");
+noteViewer.style.position = "absolute";
+noteViewer.style.zIndex = "9999";
+noteViewer.style.padding = "6px 10px";
+noteViewer.style.background = "#333";
+noteViewer.style.color = "#fff";
+noteViewer.style.fontSize = "12px";
+noteViewer.style.borderRadius = "4px";
+noteViewer.style.pointerEvents = "none";
+noteViewer.style.opacity = "0";
+noteViewer.style.transition = "opacity 0.2s ease";
+document.body.appendChild(noteViewer);
 
 
 function highlightText({ xpath, startOffset, endOffset, note}) {
@@ -113,8 +140,17 @@ function highlightText({ xpath, startOffset, endOffset, note}) {
 
 	const span = document.createElement("span");
 	span.className = "contextnote-highlight";
-	span.title = note;
+	span.addEventListener("mouseenter", (e) => {
+		noteViewer.textContent = note;
+		const rect = span.getBoundingClientRect();
+		noteViewer.style.left = `${window.scrollX + rect.left}px`;
+		noteViewer.style.top = `${window.scrollY + rect.top - 30}px`;
+		noteViewer.style.opacity = "1";
+	});
 
+	span.addEventListener("mouseleave", () => {
+		noteViewer.style.opacity = "0";
+	})
 	range.surroundContents(span);
 }
 
@@ -139,3 +175,5 @@ window.addEventListener("load", () => {
 		});
 	});
 });
+
+
