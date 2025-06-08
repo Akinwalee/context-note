@@ -340,3 +340,82 @@ function exportNotes() {
     });
 }
 
+function downloadNotes(notes, format, filenamePrefix) {
+    let content, dataType, fileExtension;
+    
+    if (format === 'json') {
+        content = JSON.stringify(notes, null, 2);
+        dataType = 'application/json';
+        fileExtension = 'json';
+    } else {
+        content = convertNotesToCSV(notes);
+        dataType = 'text/csv';
+        fileExtension = 'csv';
+    }
+    
+    const blob = new Blob([content], { type: dataType });
+    const url = URL.createObjectURL(blob);
+    
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `${filenamePrefix}-${date}.${fileExtension}`;
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Notes exported successfully!');
+    }, 0);
+}
+
+function convertNotesToCSV(notesData) {
+    let csv = 'Page URL,Highlighted Text,Note,Date Created,Tags\n';
+    
+    if (Array.isArray(notesData)) {
+        notesData.forEach(note => {
+            csv += `"${window.location.href}","${escapeCSV(note.text)}","${escapeCSV(note.note)}","${note.createdAt || ''}","${note.tags ? note.tags.join('; ') : ''}"\n`;
+        });
+    } else {
+        for (const [url, notes] of Object.entries(notesData)) {
+            notes.forEach(note => {
+                csv += `"${escapeCSV(url)}","${escapeCSV(note.text)}","${escapeCSV(note.note)}","${note.createdAt || ''}","${note.tags ? note.tags.join('; ') : ''}"\n`;
+            });
+        }
+    }
+    
+    return csv;
+}
+
+function escapeCSV(text) {
+    if (!text) return '';
+    return text.replace(/"/g, '""');
+}
+
+function getFilenameFromUrl(url) {
+    try {
+        const urlObj = new URL(url);
+        return urlObj.hostname.replace(/\./g, '_');
+    } catch (e) {
+        return 'contextnote';
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
